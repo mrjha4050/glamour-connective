@@ -25,7 +25,7 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#FF00FF", // Pure magenta
+          DEFAULT: "#8B1C3D", // Deep magenta/burgundy
           foreground: "#FFFFFF",
         },
         secondary: {
