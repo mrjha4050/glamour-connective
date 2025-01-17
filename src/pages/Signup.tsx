@@ -18,6 +18,9 @@ import {
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Checkbox } from "@/components/ui/checkbox";
+import PasswordStrengthIndicator from "@/components/PasswordStrengthIndicator";
+import TermsModal from "@/components/TermsModal";
 
 const signupSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -28,12 +31,16 @@ const signupSchema = z.object({
     .regex(/[a-z]/, "Password must contain at least one lowercase letter")
     .regex(/[0-9]/, "Password must contain at least one number")
     .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character"),
+  acceptTerms: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms and conditions",
+  }),
 });
 
 type SignupForm = z.infer<typeof signupSchema>;
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [termsModalOpen, setTermsModalOpen] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -42,6 +49,7 @@ const Signup = () => {
     defaultValues: {
       email: "",
       password: "",
+      acceptTerms: false,
     },
   });
 
@@ -132,7 +140,36 @@ const Signup = () => {
                             </Button>
                           </div>
                         </FormControl>
+                        <PasswordStrengthIndicator password={field.value} />
                         <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="acceptTerms"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel>
+                            I accept the{" "}
+                            <button
+                              type="button"
+                              className="text-primary hover:underline"
+                              onClick={() => setTermsModalOpen(true)}
+                            >
+                              terms and conditions
+                            </button>
+                          </FormLabel>
+                          <FormMessage />
+                        </div>
                       </FormItem>
                     )}
                   />
@@ -149,6 +186,7 @@ const Signup = () => {
           </Card>
         </div>
       </div>
+      <TermsModal open={termsModalOpen} onOpenChange={setTermsModalOpen} />
     </div>
   );
 };
