@@ -39,9 +39,8 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
         .from('profiles')
         .select('email')
         .eq('email', data.email)
-        .maybeSingle(); // Changed from single() to maybeSingle()
+        .maybeSingle();
 
-      // Only consider it an existing user if we got data back
       if (existingUser) {
         toast({
           variant: "destructive",
@@ -86,9 +85,12 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
         throw error;
       }
 
-      // After successful signup, send OTP
+      // After successful signup, send OTP with expiration
       const { error: otpError } = await supabase.auth.signInWithOtp({
         email: data.email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/login`,
+        },
       });
 
       if (otpError) throw otpError;
@@ -96,7 +98,7 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
       setShowOTP(true);
       toast({
         title: "Check your email",
-        description: "We've sent you a verification code. Please enter it below.",
+        description: "We've sent you a verification code that will expire in 3 minutes. Please enter it below.",
       });
     } catch (error: any) {
       console.error("Signup error:", error);
