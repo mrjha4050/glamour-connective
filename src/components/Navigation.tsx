@@ -28,7 +28,7 @@ export const Navigation = () => {
             <div className="flex items-center gap-1">
               <Link to="/login">
                 <Button className="bg-primary text-white hover:bg-primary/90 transition-all">
-                  Login
+                  Login/Signup
                 </Button>
               </Link>
               <span className="text-gray-500">/</span>
@@ -89,7 +89,7 @@ export const Navigation = () => {
               <div className="flex items-center gap-1">
                 <Link to="/login" onClick={() => setIsOpen(false)} className="flex-1">
                   <Button className="bg-primary text-white hover:bg-primary/90 transition-all w-full">
-                    Login
+                    Login/Signup
                   </Button>
                 </Link>
                 <span className="text-gray-500">/</span>
