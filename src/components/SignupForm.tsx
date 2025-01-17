@@ -64,6 +64,29 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
   const onSubmit = async (data: SignupForm) => {
     try {
       setIsLoading(true);
+      
+      // First check if the user already exists
+      const { data: existingUser } = await supabase
+        .from('profiles')
+        .select('email')
+        .eq('email', data.email)
+        .single();
+
+      if (existingUser) {
+        toast({
+          variant: "destructive",
+          title: "Account Already Exists",
+          description: "An account with this email already exists. Please login or use a different email.",
+        });
+        navigate("/login", { 
+          state: { 
+            email: data.email,
+            message: "An account with this email already exists. Please login or use a different email." 
+          } 
+        });
+        return;
+      }
+
       const { error } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
@@ -73,6 +96,20 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
       });
 
       if (error) {
+        if (error.message.includes("already registered")) {
+          toast({
+            variant: "destructive",
+            title: "Account Already Exists",
+            description: "An account with this email already exists. Please login or use a different email.",
+          });
+          navigate("/login", { 
+            state: { 
+              email: data.email,
+              message: "An account with this email already exists. Please login or use a different email." 
+            } 
+          });
+          return;
+        }
         throw error;
       }
 

@@ -3,9 +3,15 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Navigation } from "@/components/Navigation";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 const Login = () => {
+  const location = useLocation();
+  const message = location.state?.message;
+  const email = location.state?.email;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-secondary/5 to-white">
       <Navigation />
@@ -21,9 +27,19 @@ const Login = () => {
               </p>
             </CardHeader>
             <CardContent className="space-y-4">
+              {message && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{message}</AlertDescription>
+                </Alert>
+              )}
               <div className="space-y-2">
                 <label className="text-sm font-medium">Email Address</label>
-                <Input type="email" placeholder="Enter your email" />
+                <Input 
+                  type="email" 
+                  placeholder="Enter your email" 
+                  defaultValue={email || ""}
+                />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Password</label>
