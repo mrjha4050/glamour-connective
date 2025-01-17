@@ -22,6 +22,15 @@ const OTPVerification = ({ email, isLoading, setIsLoading }: OTPVerificationProp
   const navigate = useNavigate();
 
   const verifyOTP = async () => {
+    if (otp.length !== 6) {
+      toast({
+        variant: "destructive",
+        title: "Invalid Code",
+        description: "Please enter a valid 6-digit verification code.",
+      });
+      return;
+    }
+
     try {
       setIsLoading(true);
       const { error } = await supabase.auth.verifyOtp({
@@ -32,19 +41,47 @@ const OTPVerification = ({ email, isLoading, setIsLoading }: OTPVerificationProp
 
       if (error) throw error;
 
+      // Show success message
       toast({
         title: "Success!",
-        description: "Your account has been verified. Please login.",
+        description: "Your account has been verified. Please login to continue.",
       });
 
+      // Redirect to login page with success message
       navigate("/login", {
         state: {
           email,
-          message: "Account verified successfully. Please login.",
+          message: "Account verified successfully. Please login to continue.",
         },
+        replace: true, // This prevents going back to the verification page
       });
     } catch (error: any) {
       console.error("OTP verification error:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: getErrorMessage(error),
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const resendOTP = async () => {
+    try {
+      setIsLoading(true);
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Code Resent",
+        description: "A new verification code has been sent to your email.",
+      });
+    } catch (error: any) {
+      console.error("Resend OTP error:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -70,7 +107,7 @@ const OTPVerification = ({ email, isLoading, setIsLoading }: OTPVerificationProp
           render={({ slots }) => (
             <InputOTPGroup>
               {slots.map((slot, i) => (
-                <InputOTPSlot key={i} index={i} {...slot} />
+                <InputOTPSlot key={i} {...slot} />
               ))}
             </InputOTPGroup>
           )}
@@ -82,6 +119,14 @@ const OTPVerification = ({ email, isLoading, setIsLoading }: OTPVerificationProp
         disabled={isLoading || otp.length !== 6}
       >
         {isLoading ? "Verifying..." : "Verify Email"}
+      </Button>
+      <Button
+        onClick={resendOTP}
+        variant="ghost"
+        className="w-full"
+        disabled={isLoading}
+      >
+        Resend Code
       </Button>
     </div>
   );
