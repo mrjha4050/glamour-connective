@@ -18,7 +18,7 @@ interface OTPVerificationProps {
 
 const OTPVerification = ({ email, isLoading, setIsLoading }: OTPVerificationProps) => {
   const [otp, setOtp] = useState("");
-  const [timeLeft, setTimeLeft] = useState(180); // 180 seconds = 3 minutes
+  const [timeLeft, setTimeLeft] = useState(60); // Changed from 180 to 60 seconds
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -100,10 +100,10 @@ const OTPVerification = ({ email, isLoading, setIsLoading }: OTPVerificationProp
 
       if (error) throw error;
 
-      setTimeLeft(180); // Reset timer
+      setTimeLeft(60); // Changed from 180 to 60 seconds
       toast({
         title: "Code Resent",
-        description: "A new verification code has been sent to your email. Valid for 3 minutes.",
+        description: "A new verification code has been sent to your email. Valid for 1 minute.", // Updated message
       });
     } catch (error: any) {
       console.error("Resend OTP error:", error);
