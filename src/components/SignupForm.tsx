@@ -63,6 +63,7 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
           emailRedirectTo: `${window.location.origin}/login`,
           data: {
             full_name: "",
+            email_confirm: true,
           },
         },
       });
@@ -90,6 +91,9 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
         email: data.email,
         options: {
           emailRedirectTo: `${window.location.origin}/login`,
+          data: {
+            email_confirm: true,
+          },
         },
       });
 

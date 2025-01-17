@@ -92,6 +92,9 @@ const OTPVerification = ({ email, isLoading, setIsLoading }: OTPVerificationProp
         email,
         options: {
           emailRedirectTo: `${window.location.origin}/login`,
+          data: {
+            email_confirm: true,
+          },
         },
       });
 
@@ -142,10 +145,10 @@ const OTPVerification = ({ email, isLoading, setIsLoading }: OTPVerificationProp
           value={otp}
           onChange={(value) => setOtp(value)}
           disabled={isLoading || timeLeft <= 0}
-          pattern="[0-9]*"
           type="text"
           inputMode="numeric"
           autoComplete="one-time-code"
+          pattern="[0-9]*"
           render={({ slots }) => (
             <InputOTPGroup>
               {slots.map((slot, index) => (
