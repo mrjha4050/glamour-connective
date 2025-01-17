@@ -21,7 +21,7 @@ export const Navigation = () => {
             <Link to="/masterclasses" className="hover:text-primary transition-colors">Masterclasses</Link>
             <Link to="/about" className="hover:text-primary transition-colors">About</Link>
             <Link to="/register-artist">
-              <Button variant="outline" className="border-secondary text-secondary hover:bg-secondary hover:text-white transition-all">
+              <Button className="bg-secondary text-white hover:bg-secondary/90 transition-all">
                 Register as Artist
               </Button>
             </Link>
@@ -74,7 +74,7 @@ export const Navigation = () => {
                 About
               </Link>
               <Link to="/register-artist" onClick={() => setIsOpen(false)}>
-                <Button variant="outline" className="border-secondary text-secondary hover:bg-secondary hover:text-white transition-all w-full">
+                <Button className="bg-secondary text-white hover:bg-secondary/90 transition-all w-full">
                   Register as Artist
                 </Button>
               </Link>
