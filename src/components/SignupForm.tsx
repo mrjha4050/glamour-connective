@@ -29,9 +29,13 @@ const signupSchema = z.object({
     .regex(/[a-z]/, "Password must contain at least one lowercase letter")
     .regex(/[0-9]/, "Password must contain at least one number")
     .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character"),
+  confirmPassword: z.string(),
   acceptTerms: z.boolean().refine((val) => val === true, {
     message: "You must accept the terms and conditions",
   }),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
 });
 
 type SignupForm = z.infer<typeof signupSchema>;
@@ -42,6 +46,7 @@ interface SignupFormProps {
 
 export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -51,6 +56,7 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
       acceptTerms: false,
     },
   });
@@ -141,6 +147,41 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
                 </div>
               </FormControl>
               <PasswordStrengthIndicator password={field.value} />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirm Password</FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <Input
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Confirm your password"
+                    {...field}
+                    disabled={isLoading}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0 top-0"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    disabled={isLoading}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
