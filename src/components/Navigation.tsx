@@ -25,11 +25,19 @@ export const Navigation = () => {
                 Register as Artist
               </Button>
             </Link>
-            <Link to="/login">
-              <Button className="bg-primary text-white hover:bg-primary/90 transition-all">
-                Login
-              </Button>
-            </Link>
+            <div className="flex items-center gap-1">
+              <Link to="/login">
+                <Button className="bg-primary text-white hover:bg-primary/90 transition-all">
+                  Login
+                </Button>
+              </Link>
+              <span className="text-gray-500">/</span>
+              <Link to="/signup">
+                <Button variant="ghost" className="text-primary hover:bg-primary/10">
+                  Signup
+                </Button>
+              </Link>
+            </div>
           </div>
 
           {/* Mobile menu button */}
@@ -78,11 +86,19 @@ export const Navigation = () => {
                   Register as Artist
                 </Button>
               </Link>
-              <Link to="/login" onClick={() => setIsOpen(false)}>
-                <Button className="bg-primary text-white hover:bg-primary/90 transition-all w-full">
-                  Login
-                </Button>
-              </Link>
+              <div className="flex items-center gap-1">
+                <Link to="/login" onClick={() => setIsOpen(false)} className="flex-1">
+                  <Button className="bg-primary text-white hover:bg-primary/90 transition-all w-full">
+                    Login
+                  </Button>
+                </Link>
+                <span className="text-gray-500">/</span>
+                <Link to="/signup" onClick={() => setIsOpen(false)} className="flex-1">
+                  <Button variant="ghost" className="text-primary hover:bg-primary/10 w-full">
+                    Signup
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         )}
