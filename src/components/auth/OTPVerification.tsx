@@ -142,8 +142,8 @@ const OTPVerification = ({ email, isLoading, setIsLoading }: OTPVerificationProp
           value={otp}
           onChange={(value) => setOtp(value)}
           disabled={isLoading || timeLeft <= 0}
-          pattern="\d*"
-          type="number"
+          pattern="[0-9]*"
+          type="text"
           inputMode="numeric"
           autoComplete="one-time-code"
           render={({ slots }) => (
