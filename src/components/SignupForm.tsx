@@ -133,6 +133,9 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
         password: data.password,
         options: {
           emailRedirectTo: `${window.location.origin}/login`,
+          data: {
+            full_name: "",
+          },
         },
       });
 
@@ -153,6 +156,13 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
         }
         throw error;
       }
+
+      // After successful signup, send OTP
+      const { error: otpError } = await supabase.auth.signInWithOtp({
+        email: data.email,
+      });
+
+      if (otpError) throw otpError;
 
       setShowOTP(true);
       toast({
@@ -186,8 +196,8 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
             disabled={isLoading}
             render={({ slots }) => (
               <InputOTPGroup>
-                {slots.map((slot, index) => (
-                  <InputOTPSlot key={index} {...slot} />
+                {slots.map((slot, i) => (
+                  <InputOTPSlot key={i} index={i} {...slot} />
                 ))}
               </InputOTPGroup>
             )}
