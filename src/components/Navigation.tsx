@@ -15,7 +15,7 @@ export const Navigation = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-6">
             <Link to="/" className="hover:text-primary transition-colors">Home</Link>
             <Link to="/search" className="hover:text-primary transition-colors">Find Artists</Link>
             <Link to="/masterclasses" className="hover:text-primary transition-colors">Masterclasses</Link>
@@ -25,19 +25,11 @@ export const Navigation = () => {
                 Register as Artist
               </Button>
             </Link>
-            <div className="flex items-center gap-1">
-              <Link to="/login">
-                <Button className="bg-primary text-white hover:bg-primary/90 transition-all">
-                  Login/Signup
-                </Button>
-              </Link>
-              <span className="text-gray-500">/</span>
-              <Link to="/signup">
-                <Button variant="ghost" className="text-primary hover:bg-primary/10">
-                  Signup
-                </Button>
-              </Link>
-            </div>
+            <Link to="/login">
+              <Button className="bg-primary text-white hover:bg-primary/90 transition-all px-6">
+                Login/Signup
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -86,19 +78,11 @@ export const Navigation = () => {
                   Register as Artist
                 </Button>
               </Link>
-              <div className="flex items-center gap-1">
-                <Link to="/login" onClick={() => setIsOpen(false)} className="flex-1">
-                  <Button className="bg-primary text-white hover:bg-primary/90 transition-all w-full">
-                    Login/Signup
-                  </Button>
-                </Link>
-                <span className="text-gray-500">/</span>
-                <Link to="/signup" onClick={() => setIsOpen(false)} className="flex-1">
-                  <Button variant="ghost" className="text-primary hover:bg-primary/10 w-full">
-                    Signup
-                  </Button>
-                </Link>
-              </div>
+              <Link to="/login" onClick={() => setIsOpen(false)}>
+                <Button className="bg-primary text-white hover:bg-primary/90 transition-all w-full px-6">
+                  Login/Signup
+                </Button>
+              </Link>
             </div>
           </div>
         )}
