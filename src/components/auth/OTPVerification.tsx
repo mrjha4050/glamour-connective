@@ -18,9 +18,45 @@ interface OTPVerificationProps {
 
 const OTPVerification = ({ email, isLoading, setIsLoading }: OTPVerificationProps) => {
   const [otp, setOtp] = useState("");
-  const [timeLeft, setTimeLeft] = useState(60); // Changed from 180 to 60 seconds
+  const [timeLeft, setTimeLeft] = useState(60);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Initial OTP send on component mount
+    const sendInitialOTP = async () => {
+      try {
+        setIsLoading(true);
+        const { error: otpError } = await supabase.auth.signInWithOtp({
+          email,
+          options: {
+            emailRedirectTo: `${window.location.origin}/login`,
+            data: {
+              email_confirm: true,
+            },
+          },
+        });
+
+        if (otpError) throw otpError;
+
+        toast({
+          title: "Verification Code Sent",
+          description: "Please check your email (including spam folder) for the verification code.",
+        });
+      } catch (error: any) {
+        console.error("Initial OTP send error:", error);
+        toast({
+          variant: "destructive",
+          title: "Error Sending Code",
+          description: getErrorMessage(error),
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    sendInitialOTP();
+  }, [email]);
 
   useEffect(() => {
     if (timeLeft <= 0) return;
@@ -66,7 +102,7 @@ const OTPVerification = ({ email, isLoading, setIsLoading }: OTPVerificationProp
             title: "Code Expired",
             description: "The verification code has expired or is invalid. Please request a new one.",
           });
-          setTimeLeft(0); // Force timer to expire
+          setTimeLeft(0);
           return;
         }
         throw error;
@@ -113,10 +149,10 @@ const OTPVerification = ({ email, isLoading, setIsLoading }: OTPVerificationProp
 
       if (error) throw error;
 
-      setTimeLeft(60); // Changed from 180 to 60 seconds
+      setTimeLeft(60);
       toast({
         title: "Code Resent",
-        description: "A new verification code has been sent to your email. Valid for 1 minute.", // Updated message
+        description: "A new verification code has been sent to your email. Valid for 1 minute.",
       });
     } catch (error: any) {
       console.error("Resend OTP error:", error);
@@ -165,7 +201,7 @@ const OTPVerification = ({ email, isLoading, setIsLoading }: OTPVerificationProp
           render={({ slots }) => (
             <InputOTPGroup>
               {slots.map((slot, index) => (
-                <InputOTPSlot key={index} {...slot} index={index} />
+                <InputOTPSlot key={index} {...slot} />
               ))}
             </InputOTPGroup>
           )}
