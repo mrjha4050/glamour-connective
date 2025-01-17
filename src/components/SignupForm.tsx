@@ -58,7 +58,7 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
         email: data.email,
         password: data.password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: `${window.location.origin}/login`,
           data: {
             full_name: "",
             email_confirm: true,
@@ -86,13 +86,13 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
 
       toast({
         title: "Success!",
-        description: "Please check your email (including spam folder) for the verification link. You'll need to verify your email before logging in.",
+        description: "Your account has been created. Please check your email to verify your account.",
       });
 
       navigate("/login", {
         state: {
           email: data.email,
-          message: "Please check your email (including spam folder) for the verification link before logging in.",
+          message: "Please check your email to verify your account before logging in.",
         },
       });
     } catch (error: any) {
