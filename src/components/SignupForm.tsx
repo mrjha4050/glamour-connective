@@ -35,12 +35,13 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
       setIsLoading(true);
       
       // First check if the user already exists
-      const { data: existingUser } = await supabase
+      const { data: existingUser, error: queryError } = await supabase
         .from('profiles')
         .select('email')
         .eq('email', data.email)
-        .single();
+        .maybeSingle(); // Changed from single() to maybeSingle()
 
+      // Only consider it an existing user if we got data back
       if (existingUser) {
         toast({
           variant: "destructive",
