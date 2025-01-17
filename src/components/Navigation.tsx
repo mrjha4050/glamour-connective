@@ -15,7 +15,7 @@ export const Navigation = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center space-x-4">
             <Link to="/" className="hover:text-primary transition-colors">Home</Link>
             <Link to="/search" className="hover:text-primary transition-colors">Find Artists</Link>
             <Link to="/masterclasses" className="hover:text-primary transition-colors">Masterclasses</Link>
