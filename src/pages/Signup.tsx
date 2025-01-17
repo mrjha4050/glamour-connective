@@ -21,6 +21,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Checkbox } from "@/components/ui/checkbox";
 import PasswordStrengthIndicator from "@/components/PasswordStrengthIndicator";
 import TermsModal from "@/components/TermsModal";
+import { AuthError, AuthApiError } from "@supabase/supabase-js";
 
 const signupSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -38,9 +39,26 @@ const signupSchema = z.object({
 
 type SignupForm = z.infer<typeof signupSchema>;
 
+const getErrorMessage = (error: AuthError) => {
+  if (error instanceof AuthApiError) {
+    switch (error.status) {
+      case 400:
+        return "Invalid email or password format";
+      case 422:
+        return "Email already registered";
+      case 429:
+        return "Too many attempts. Please try again later";
+      default:
+        return error.message;
+    }
+  }
+  return "An unexpected error occurred. Please try again";
+};
+
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [termsModalOpen, setTermsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -55,25 +73,35 @@ const Signup = () => {
 
   const onSubmit = async (data: SignupForm) => {
     try {
+      setIsLoading(true);
       const { error } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/login`,
+        },
       });
 
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
 
       toast({
         title: "Success!",
         description: "Please check your email to verify your account.",
       });
 
+      // Redirect to login page after successful signup
       navigate("/login");
     } catch (error: any) {
+      console.error("Signup error:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message,
+        description: getErrorMessage(error),
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -105,6 +133,7 @@ const Signup = () => {
                             type="email"
                             placeholder="Enter your email"
                             {...field}
+                            disabled={isLoading}
                           />
                         </FormControl>
                         <FormMessage />
@@ -124,6 +153,7 @@ const Signup = () => {
                               type={showPassword ? "text" : "password"}
                               placeholder="Create a password"
                               {...field}
+                              disabled={isLoading}
                             />
                             <Button
                               type="button"
@@ -131,6 +161,7 @@ const Signup = () => {
                               size="icon"
                               className="absolute right-0 top-0"
                               onClick={() => setShowPassword(!showPassword)}
+                              disabled={isLoading}
                             >
                               {showPassword ? (
                                 <EyeOff className="h-4 w-4" />
@@ -155,6 +186,7 @@ const Signup = () => {
                           <Checkbox
                             checked={field.value}
                             onCheckedChange={field.onChange}
+                            disabled={isLoading}
                           />
                         </FormControl>
                         <div className="space-y-1 leading-none">
@@ -164,6 +196,7 @@ const Signup = () => {
                               type="button"
                               className="text-primary hover:underline"
                               onClick={() => setTermsModalOpen(true)}
+                              disabled={isLoading}
                             >
                               terms and conditions
                             </button>
@@ -176,9 +209,10 @@ const Signup = () => {
 
                   <Button
                     type="submit"
-                    className="w-full bg-primary text-white hover:bg-primary/90 transition-all"
+                    className="w-full bg-primary text-white hover:bg-primary/90 transition-all shimmer"
+                    disabled={isLoading}
                   >
-                    Sign Up
+                    {isLoading ? "Creating account..." : "Sign Up"}
                   </Button>
                 </form>
               </Form>
