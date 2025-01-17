@@ -33,7 +33,7 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
       setIsLoading(true);
       
       // First check if the user already exists
-      const { data: existingUser, error: queryError } = await supabase
+      const { data: existingUser } = await supabase
         .from('profiles')
         .select('email')
         .eq('email', data.email)
@@ -58,7 +58,7 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
         email: data.email,
         password: data.password,
         options: {
-          emailRedirectTo: `${window.location.origin}/login`,
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
           data: {
             full_name: "",
             email_confirm: true,
@@ -86,13 +86,13 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
 
       toast({
         title: "Success!",
-        description: "Your account has been created. Please check your email to verify your account.",
+        description: "Please check your email (including spam folder) for the verification link. You'll need to verify your email before logging in.",
       });
 
       navigate("/login", {
         state: {
           email: data.email,
-          message: "Please check your email to verify your account before logging in.",
+          message: "Please check your email (including spam folder) for the verification link before logging in.",
         },
       });
     } catch (error: any) {
