@@ -21,12 +21,12 @@ export const Navigation = () => {
             <Link to="/masterclasses" className="hover:text-primary transition-colors">Masterclasses</Link>
             <Link to="/about" className="hover:text-primary transition-colors">About</Link>
             <Link to="/register-artist">
-              <Button className="bg-secondary text-white hover:bg-secondary/90 transition-all">
+              <Button variant="outline" className="border-secondary text-secondary hover:bg-secondary hover:text-white transition-all">
                 Register as Artist
               </Button>
             </Link>
             <Link to="/login">
-              <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white transition-all">
+              <Button className="bg-primary text-white hover:bg-primary/90 transition-all">
                 Login
               </Button>
             </Link>
@@ -74,12 +74,12 @@ export const Navigation = () => {
                 About
               </Link>
               <Link to="/register-artist" onClick={() => setIsOpen(false)}>
-                <Button className="bg-secondary text-white hover:bg-secondary/90 transition-all w-full">
+                <Button variant="outline" className="border-secondary text-secondary hover:bg-secondary hover:text-white transition-all w-full">
                   Register as Artist
                 </Button>
               </Link>
               <Link to="/login" onClick={() => setIsOpen(false)}>
-                <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white transition-all w-full">
+                <Button className="bg-primary text-white hover:bg-primary/90 transition-all w-full">
                   Login
                 </Button>
               </Link>

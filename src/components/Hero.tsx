@@ -13,10 +13,10 @@ export const Hero = () => {
             Connect with top makeup artists and transform your special moments into unforgettable memories.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
-            <Button className="bg-secondary text-white hover:bg-secondary/90 transition-all text-lg py-6 px-8 shimmer">
+            <Button variant="outline" className="border-secondary text-secondary hover:bg-secondary hover:text-white transition-all text-lg py-6 px-8 shimmer">
               Register as Artist
             </Button>
-            <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white transition-all text-lg py-6 px-8">
+            <Button className="bg-primary text-white hover:bg-primary/90 transition-all text-lg py-6 px-8">
               Book an Artist
             </Button>
           </div>
