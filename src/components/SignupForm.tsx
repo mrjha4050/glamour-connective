@@ -67,6 +67,7 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
       });
 
       if (error) {
+        console.error("Signup error:", error);
         if (error.message.includes("already registered")) {
           toast({
             variant: "destructive",
@@ -86,13 +87,13 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
 
       toast({
         title: "Success!",
-        description: "Your account has been created. Please check your email to verify your account.",
+        description: "Please check your email (including spam folder) to verify your account before logging in.",
       });
 
       navigate("/login", {
         state: {
           email: data.email,
-          message: "Please check your email to verify your account before logging in.",
+          message: "Please check your email (including spam folder) to verify your account before logging in.",
         },
       });
     } catch (error: any) {
