@@ -12,7 +12,7 @@ export const Hero = () => {
           <p className="text-lg md:text-xl text-gray-600 mb-8">
             Connect with top makeup artists and transform your special moments into unforgettable memories.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-3">
             <Button className="bg-secondary text-white hover:bg-secondary/90 transition-all text-lg py-6 px-8 shimmer">
               Register as Artist
             </Button>
