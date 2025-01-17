@@ -94,7 +94,7 @@ const OTPVerification = ({ email, isLoading, setIsLoading }: OTPVerificationProp
     <div className="space-y-4">
       <h2 className="text-lg font-medium text-center">Enter Verification Code</h2>
       <p className="text-sm text-gray-500 text-center">
-        Please enter the verification code sent to your email
+        Please enter the verification code sent to {email}
       </p>
       <div className="flex justify-center">
         <InputOTP
@@ -104,8 +104,8 @@ const OTPVerification = ({ email, isLoading, setIsLoading }: OTPVerificationProp
           disabled={isLoading}
           render={({ slots }) => (
             <InputOTPGroup>
-              {slots.map((slot, i) => (
-                <InputOTPSlot key={i} {...slot} index={i} />
+              {slots.map((slot, index) => (
+                <InputOTPSlot key={index} {...slot} index={index} />
               ))}
             </InputOTPGroup>
           )}
