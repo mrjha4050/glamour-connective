@@ -15,6 +15,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 import PasswordStrengthIndicator from "@/components/PasswordStrengthIndicator";
 import { supabase } from "@/integrations/supabase/client";
 import { getErrorMessage } from "@/utils/auth-errors";
@@ -48,6 +53,8 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showOTP, setShowOTP] = useState(false);
+  const [otp, setOtp] = useState("");
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -60,6 +67,40 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
       acceptTerms: false,
     },
   });
+
+  const verifyOTP = async () => {
+    try {
+      setIsLoading(true);
+      const { error } = await supabase.auth.verifyOtp({
+        email: form.getValues("email"),
+        token: otp,
+        type: "signup",
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success!",
+        description: "Your account has been verified. Please login.",
+      });
+
+      navigate("/login", {
+        state: {
+          email: form.getValues("email"),
+          message: "Account verified successfully. Please login.",
+        },
+      });
+    } catch (error: any) {
+      console.error("OTP verification error:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: getErrorMessage(error),
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const onSubmit = async (data: SignupForm) => {
     try {
@@ -113,12 +154,11 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
         throw error;
       }
 
+      setShowOTP(true);
       toast({
-        title: "Success!",
-        description: "Please check your email to verify your account.",
+        title: "Check your email",
+        description: "We've sent you a verification code. Please enter it below.",
       });
-
-      navigate("/login");
     } catch (error: any) {
       console.error("Signup error:", error);
       toast({
@@ -130,6 +170,39 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
       setIsLoading(false);
     }
   };
+
+  if (showOTP) {
+    return (
+      <div className="space-y-4">
+        <h2 className="text-lg font-medium text-center">Enter Verification Code</h2>
+        <p className="text-sm text-gray-500 text-center">
+          Please enter the verification code sent to your email
+        </p>
+        <div className="flex justify-center">
+          <InputOTP
+            maxLength={6}
+            value={otp}
+            onChange={(value) => setOtp(value)}
+            disabled={isLoading}
+            render={({ slots }) => (
+              <InputOTPGroup>
+                {slots.map((slot, index) => (
+                  <InputOTPSlot key={index} {...slot} />
+                ))}
+              </InputOTPGroup>
+            )}
+          />
+        </div>
+        <Button
+          onClick={verifyOTP}
+          className="w-full bg-primary text-white hover:bg-primary/90 transition-all shimmer"
+          disabled={isLoading || otp.length !== 6}
+        >
+          {isLoading ? "Verifying..." : "Verify Email"}
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <Form {...form}>
