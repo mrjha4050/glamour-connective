@@ -41,19 +41,17 @@ const OTPVerification = ({ email, isLoading, setIsLoading }: OTPVerificationProp
 
       if (error) throw error;
 
-      // Show success message
       toast({
         title: "Success!",
         description: "Your account has been verified. Please login to continue.",
       });
 
-      // Redirect to login page with success message
       navigate("/login", {
         state: {
           email,
           message: "Account verified successfully. Please login to continue.",
         },
-        replace: true, // This prevents going back to the verification page
+        replace: true,
       });
     } catch (error: any) {
       console.error("OTP verification error:", error);
