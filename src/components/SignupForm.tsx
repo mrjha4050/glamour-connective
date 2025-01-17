@@ -7,7 +7,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { getErrorMessage } from "@/utils/auth-errors";
 import { useToast } from "@/hooks/use-toast";
 import { signupSchema, SignupFormData } from "@/types/auth";
-import OTPVerification from "./auth/OTPVerification";
 import RegistrationForm from "./auth/RegistrationForm";
 
 interface SignupFormProps {
@@ -16,7 +15,6 @@ interface SignupFormProps {
 
 export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [showOTP, setShowOTP] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -86,23 +84,16 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
         throw error;
       }
 
-      // After successful signup, send OTP with expiration
-      const { error: otpError } = await supabase.auth.signInWithOtp({
-        email: data.email,
-        options: {
-          emailRedirectTo: `${window.location.origin}/login`,
-          data: {
-            email_confirm: true,
-          },
-        },
+      toast({
+        title: "Success!",
+        description: "Your account has been created. Please check your email to verify your account.",
       });
 
-      if (otpError) throw otpError;
-
-      setShowOTP(true);
-      toast({
-        title: "Check your email",
-        description: "We've sent you a verification code that will expire in 3 minutes. Please enter it below.",
+      navigate("/login", {
+        state: {
+          email: data.email,
+          message: "Please check your email to verify your account before logging in.",
+        },
       });
     } catch (error: any) {
       console.error("Signup error:", error);
@@ -115,16 +106,6 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
       setIsLoading(false);
     }
   };
-
-  if (showOTP) {
-    return (
-      <OTPVerification
-        email={form.getValues("email")}
-        isLoading={isLoading}
-        setIsLoading={setIsLoading}
-      />
-    );
-  }
 
   return (
     <Form {...form}>
