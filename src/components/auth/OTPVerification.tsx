@@ -142,10 +142,14 @@ const OTPVerification = ({ email, isLoading, setIsLoading }: OTPVerificationProp
           value={otp}
           onChange={(value) => setOtp(value)}
           disabled={isLoading || timeLeft <= 0}
+          pattern="\d*"
+          type="number"
+          inputMode="numeric"
+          autoComplete="one-time-code"
           render={({ slots }) => (
             <InputOTPGroup>
               {slots.map((slot, index) => (
-                <InputOTPSlot key={index} {...slot} index={index} />
+                <InputOTPSlot key={index} {...slot} />
               ))}
             </InputOTPGroup>
           )}
