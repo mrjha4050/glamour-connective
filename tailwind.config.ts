@@ -29,7 +29,7 @@ export default {
           foreground: "#FFFFFF",
         },
         secondary: {
-          DEFAULT: "#F5B642", // More vibrant gold color
+          DEFAULT: "#B87333", // Rich copperish gold
           foreground: "#000000",
         },
         destructive: {
