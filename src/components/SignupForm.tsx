@@ -31,15 +31,22 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
   const onSubmit = async (data: SignupFormData) => {
     try {
       setIsLoading(true);
+      console.log("Starting signup process for email:", data.email);
       
       // First check if the user already exists
-      const { data: existingUser } = await supabase
+      const { data: existingUser, error: checkError } = await supabase
         .from('profiles')
         .select('email')
         .eq('email', data.email)
         .maybeSingle();
 
+      if (checkError) {
+        console.error("Error checking existing user:", checkError);
+        throw checkError;
+      }
+
       if (existingUser) {
+        console.log("User already exists:", data.email);
         toast({
           variant: "destructive",
           title: "Account Already Exists",
@@ -54,11 +61,11 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
         return;
       }
 
-      const { error } = await supabase.auth.signUp({
+      console.log("Proceeding with signup for new user");
+      const { data: signUpData, error } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
         options: {
-          emailRedirectTo: `${window.location.origin}/login`,
           data: {
             full_name: "",
             email_confirm: true,
@@ -68,26 +75,14 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
 
       if (error) {
         console.error("Signup error:", error);
-        if (error.message.includes("already registered")) {
-          toast({
-            variant: "destructive",
-            title: "Account Already Exists",
-            description: "An account with this email already exists. Please login or use a different email.",
-          });
-          navigate("/login", { 
-            state: { 
-              email: data.email,
-              message: "An account with this email already exists. Please login or use a different email." 
-            } 
-          });
-          return;
-        }
         throw error;
       }
 
+      console.log("Signup successful, user data:", signUpData);
       toast({
-        title: "Success!",
-        description: "Please check your email (including spam folder) to verify your account before logging in.",
+        title: "Account Created Successfully!",
+        description: "Please check your email (including spam folder) to verify your account before logging in. This may take a few minutes.",
+        duration: 6000,
       });
 
       navigate("/login", {
@@ -97,10 +92,10 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
         },
       });
     } catch (error: any) {
-      console.error("Signup error:", error);
+      console.error("Signup process error:", error);
       toast({
         variant: "destructive",
-        title: "Error",
+        title: "Error Creating Account",
         description: getErrorMessage(error),
       });
     } finally {
