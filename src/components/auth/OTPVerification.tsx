@@ -59,7 +59,18 @@ const OTPVerification = ({ email, isLoading, setIsLoading }: OTPVerificationProp
         type: "signup",
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message.includes("expired") || error.message.includes("invalid")) {
+          toast({
+            variant: "destructive",
+            title: "Code Expired",
+            description: "The verification code has expired or is invalid. Please request a new one.",
+          });
+          setTimeLeft(0); // Force timer to expire
+          return;
+        }
+        throw error;
+      }
 
       toast({
         title: "Success!",
@@ -75,10 +86,12 @@ const OTPVerification = ({ email, isLoading, setIsLoading }: OTPVerificationProp
       });
     } catch (error: any) {
       console.error("OTP verification error:", error);
+      const errorBody = error.body ? JSON.parse(error.body) : null;
+      const errorMessage = errorBody?.message || getErrorMessage(error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: getErrorMessage(error),
+        description: errorMessage,
       });
     } finally {
       setIsLoading(false);
