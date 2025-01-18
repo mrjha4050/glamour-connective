@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 export const Hero = () => {
   return (
@@ -13,9 +14,11 @@ export const Hero = () => {
             Connect with top makeup artists and transform your special moments into unforgettable memories.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
-            <Button className="bg-secondary text-white hover:bg-secondary/90 transition-all text-lg py-6 px-8 shimmer">
-              Register as Artist
-            </Button>
+            <Link to="/register-artist">
+              <Button className="bg-secondary text-white hover:bg-secondary/90 transition-all text-lg py-6 px-8 shimmer w-full sm:w-auto">
+                Register as Artist
+              </Button>
+            </Link>
             <Button className="bg-primary text-white hover:bg-primary/90 transition-all text-lg py-6 px-8">
               Book an Artist
             </Button>
