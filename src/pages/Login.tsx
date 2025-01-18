@@ -32,17 +32,24 @@ const Login = () => {
   });
 
   const checkUsernameExists = async (username: string) => {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('username')
-      .eq('username', username)
-      .single();
+    try {
+      console.log("Checking if username exists:", username);
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('username', username)
+        .maybeSingle();
 
-    if (error && error.code !== 'PGRST116') {
-      console.error('Error checking username:', error);
-      return true; // Assume exists on error to prevent creation
+      if (error && error.code !== 'PGRST116') {
+        console.error("Error checking username:", error);
+        throw error;
+      }
+
+      return !!data;
+    } catch (error) {
+      console.error("Error in checkUsernameExists:", error);
+      throw error;
     }
-    return !!data;
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -50,14 +57,16 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      console.log("Attempting login for email:", formData.email);
-      
-      // First check if the user exists
-      const { data: existingUser } = await supabase
+      console.log("Checking if email exists:", formData.email);
+      const { data: existingUser, error: checkError } = await supabase
         .from('profiles')
         .select('email')
         .eq('email', formData.email)
-        .single();
+        .maybeSingle();
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        throw checkError;
+      }
 
       if (!existingUser) {
         toast({
@@ -114,7 +123,7 @@ const Login = () => {
         });
         navigate("/dashboard");
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Login error:", error);
       toast({
         variant: "destructive",
@@ -151,11 +160,16 @@ const Login = () => {
 
     try {
       // Check if email already exists
-      const { data: existingEmail } = await supabase
+      console.log("Checking if email exists:", formData.email);
+      const { data: existingEmail, error: emailError } = await supabase
         .from('profiles')
         .select('email')
         .eq('email', formData.email)
-        .single();
+        .maybeSingle();
+
+      if (emailError && emailError.code !== 'PGRST116') {
+        throw emailError;
+      }
 
       if (existingEmail) {
         toast({
@@ -177,7 +191,7 @@ const Login = () => {
         return;
       }
 
-      // Check if username is taken
+      // Check if username exists
       const usernameExists = await checkUsernameExists(formData.username);
       if (usernameExists) {
         toast({
@@ -217,7 +231,7 @@ const Login = () => {
         });
         setIsSignUp(false);
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Signup error:", error);
       toast({
         variant: "destructive",
