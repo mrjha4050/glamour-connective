@@ -34,11 +34,14 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
       console.log("Starting signup process for email:", data.email);
       
       // First check if the user already exists
+      console.log("Checking if user exists in profiles table...");
       const { data: existingUser, error: checkError } = await supabase
         .from('profiles')
         .select('email')
         .eq('email', data.email)
         .maybeSingle();
+
+      console.log("Existing user check result:", { existingUser, checkError });
 
       if (checkError && checkError.code !== 'PGRST116') {
         console.error("Error checking existing user:", checkError);
@@ -46,7 +49,7 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
       }
 
       if (existingUser) {
-        console.log("User already exists:", data.email);
+        console.log("User already exists in profiles:", existingUser);
         toast({
           variant: "destructive",
           title: "Account Already Exists",
@@ -61,7 +64,7 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
         return;
       }
 
-      console.log("Proceeding with signup for new user");
+      console.log("No existing user found, proceeding with signup");
       const { data: signUpData, error } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
@@ -78,6 +81,8 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
       }
 
       console.log("Signup successful, user data:", signUpData);
+      console.log("Profile should be created by database trigger");
+      
       toast({
         title: "Account Created Successfully!",
         description: "You can now log in with your credentials.",

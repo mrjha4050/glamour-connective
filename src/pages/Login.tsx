@@ -59,18 +59,24 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      console.log("Checking if email exists:", formData.email);
+      console.log("Starting login process for email:", formData.email);
+      
+      // Check if user exists in profiles
+      console.log("Checking if user exists in profiles table...");
       const { data: existingUser, error: checkError } = await supabase
         .from('profiles')
         .select('email')
         .eq('email', formData.email)
         .maybeSingle();
 
+      console.log("Profile check result:", { existingUser, checkError });
+
       if (checkError && checkError.code !== 'PGRST116') {
         throw checkError;
       }
 
       if (!existingUser) {
+        console.log("No user found in profiles table");
         toast({
           variant: "destructive",
           title: "Account Not Found",
@@ -91,6 +97,7 @@ const Login = () => {
         return;
       }
 
+      console.log("User found in profiles, attempting login...");
       const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
@@ -101,6 +108,7 @@ const Login = () => {
         
         if (error instanceof AuthApiError) {
           if (error.message.includes("Invalid login credentials")) {
+            console.log("Invalid credentials - likely wrong password");
             toast({
               variant: "destructive",
               title: "Incorrect Password",
@@ -118,7 +126,7 @@ const Login = () => {
       }
 
       if (data?.user) {
-        console.log("Login successful, user:", data.user);
+        console.log("Login successful, user data:", data.user);
         toast({
           title: "Login Successful",
           description: "Welcome back!",
