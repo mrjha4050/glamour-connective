@@ -9,7 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { AuthError } from "@supabase/supabase-js";
+import { AuthError, AuthApiError } from "@supabase/supabase-js";
 
 const Login = () => {
   const location = useLocation();
@@ -39,19 +39,46 @@ const Login = () => {
       if (error) {
         console.error("Login error:", error);
         
-        // Handle email not confirmed error specifically
-        if (error.message.includes("Email not confirmed")) {
-          const { data: resendData, error: resendError } = await supabase.auth.resend({
-            type: 'signup',
-            email: formData.email,
-          });
-          
-          if (!resendError) {
+        if (error instanceof AuthApiError && error.status === 400) {
+          if (error.message.includes("Email not confirmed")) {
+            // First try to sign up the user again which will trigger a new confirmation email
+            const { error: signUpError } = await supabase.auth.signUp({
+              email: formData.email,
+              password: formData.password,
+            });
+
+            if (!signUpError) {
+              toast({
+                title: "Verification Required",
+                description: "We've sent a new verification email. Please check your inbox.",
+                duration: 6000,
+              });
+            } else {
+              // If sign up fails, try the resend endpoint
+              const { error: resendError } = await supabase.auth.resend({
+                type: 'signup',
+                email: formData.email,
+              });
+              
+              if (!resendError) {
+                toast({
+                  title: "Verification Required",
+                  description: "We've sent a new verification email. Please check your inbox.",
+                  duration: 6000,
+                });
+              } else {
+                toast({
+                  variant: "destructive",
+                  title: "Error",
+                  description: "Unable to send verification email. Please try again later.",
+                });
+              }
+            }
+          } else {
             toast({
               variant: "destructive",
-              title: "Email Verification Required",
-              description: "Please check your email for a verification link. We've sent a new one just now.",
-              duration: 6000,
+              title: "Login Failed",
+              description: "Invalid email or password. Please check your credentials.",
             });
           }
         } else {
@@ -61,6 +88,7 @@ const Login = () => {
             description: error.message,
           });
         }
+        setIsLoading(false);
         return;
       }
 
