@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { AuthError } from "@supabase/supabase-js";
 
 const Login = () => {
   const location = useLocation();
@@ -28,6 +29,8 @@ const Login = () => {
     setIsLoading(true);
 
     try {
+      console.log("Attempting login for email:", formData.email);
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
@@ -35,15 +38,34 @@ const Login = () => {
 
       if (error) {
         console.error("Login error:", error);
-        toast({
-          variant: "destructive",
-          title: "Login Failed",
-          description: error.message,
-        });
+        
+        // Handle email not confirmed error specifically
+        if (error.message.includes("Email not confirmed")) {
+          const { data: resendData, error: resendError } = await supabase.auth.resend({
+            type: 'signup',
+            email: formData.email,
+          });
+          
+          if (!resendError) {
+            toast({
+              variant: "destructive",
+              title: "Email Verification Required",
+              description: "Please check your email for a verification link. We've sent a new one just now.",
+              duration: 6000,
+            });
+          }
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Login Failed",
+            description: error.message,
+          });
+        }
         return;
       }
 
       if (data?.user) {
+        console.log("Login successful, user:", data.user);
         toast({
           title: "Login Successful",
           description: "Welcome back!",
