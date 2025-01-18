@@ -39,40 +39,26 @@ const Login = () => {
       if (error) {
         console.error("Login error:", error);
         
-        if (error instanceof AuthApiError && error.status === 400) {
+        if (error instanceof AuthApiError) {
           if (error.message.includes("Email not confirmed")) {
-            // First try to sign up the user again which will trigger a new confirmation email
-            const { error: signUpError } = await supabase.auth.signUp({
+            // Try to resend verification email
+            const { error: resendError } = await supabase.auth.resend({
+              type: 'signup',
               email: formData.email,
-              password: formData.password,
             });
-
-            if (!signUpError) {
+            
+            if (!resendError) {
               toast({
                 title: "Verification Required",
-                description: "We've sent a new verification email. Please check your inbox.",
-                duration: 6000,
+                description: "A verification email has been sent. Please check your inbox and verify your email before logging in.",
+                duration: 8000,
               });
             } else {
-              // If sign up fails, try the resend endpoint
-              const { error: resendError } = await supabase.auth.resend({
-                type: 'signup',
-                email: formData.email,
+              toast({
+                variant: "destructive",
+                title: "Error",
+                description: "Unable to send verification email. Please try signing up again.",
               });
-              
-              if (!resendError) {
-                toast({
-                  title: "Verification Required",
-                  description: "We've sent a new verification email. Please check your inbox.",
-                  duration: 6000,
-                });
-              } else {
-                toast({
-                  variant: "destructive",
-                  title: "Error",
-                  description: "Unable to send verification email. Please try again later.",
-                });
-              }
             }
           } else {
             toast({
