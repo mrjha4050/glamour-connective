@@ -10,6 +10,7 @@ import ArtistRegistration from "./pages/ArtistRegistration";
 import Search from "./pages/Search";
 import Masterclasses from "./pages/Masterclasses";
 import About from "./pages/About";
+import Dashboard from "./pages/Dashboard";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/search" element={<Search />} />
           <Route path="/masterclasses" element={<Masterclasses />} />
           <Route path="/about" element={<About />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
