@@ -1,16 +1,74 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Navigation } from "@/components/Navigation";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const message = location.state?.message;
   const email = location.state?.email;
+  
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: email || "",
+    password: "",
+  });
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (error) {
+        console.error("Login error:", error);
+        toast({
+          variant: "destructive",
+          title: "Login Failed",
+          description: error.message,
+        });
+        return;
+      }
+
+      if (data?.user) {
+        toast({
+          title: "Login Successful",
+          description: "Welcome back!",
+        });
+        navigate("/dashboard");
+      }
+    } catch (error: any) {
+      console.error("Login error:", error);
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: "An unexpected error occurred. Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-secondary/5 to-white">
@@ -33,38 +91,54 @@ const Login = () => {
                   <AlertDescription>{message}</AlertDescription>
                 </Alert>
               )}
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Email Address</label>
-                <Input 
-                  type="email" 
-                  placeholder="Enter your email" 
-                  defaultValue={email || ""}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Password</label>
-                <Input type="password" placeholder="Enter your password" />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="remember" />
-                  <label htmlFor="remember" className="text-sm text-gray-600">
-                    Remember me
-                  </label>
+              <form onSubmit={handleLogin} className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Email Address</label>
+                  <Input 
+                    type="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    disabled={isLoading}
+                  />
                 </div>
-                <Link to="/forgot-password" className="text-sm text-secondary hover:underline">
-                  Forgot Password?
-                </Link>
-              </div>
-              <Button className="w-full bg-primary text-white hover:bg-primary/90 transition-all shimmer">
-                Login
-              </Button>
-              <p className="text-center text-sm text-gray-600">
-                Don't have an account?{" "}
-                <Link to="/signup" className="text-secondary hover:underline">
-                  Sign up
-                </Link>
-              </p>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Password</label>
+                  <Input 
+                    type="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    disabled={isLoading}
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="remember" />
+                    <label htmlFor="remember" className="text-sm text-gray-600">
+                      Remember me
+                    </label>
+                  </div>
+                  <Link to="/forgot-password" className="text-sm text-secondary hover:underline">
+                    Forgot Password?
+                  </Link>
+                </div>
+                <Button 
+                  type="submit" 
+                  className="w-full bg-primary text-white hover:bg-primary/90 transition-all shimmer"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Logging in..." : "Login"}
+                </Button>
+                <p className="text-center text-sm text-gray-600">
+                  Don't have an account?{" "}
+                  <Link to="/signup" className="text-secondary hover:underline">
+                    Sign up
+                  </Link>
+                </p>
+              </form>
             </CardContent>
           </Card>
         </div>

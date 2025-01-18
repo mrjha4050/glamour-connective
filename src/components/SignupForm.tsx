@@ -68,7 +68,6 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
         options: {
           data: {
             full_name: "",
-            email_confirm: true,
           },
         },
       });
@@ -81,14 +80,14 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
       console.log("Signup successful, user data:", signUpData);
       toast({
         title: "Account Created Successfully!",
-        description: "Please check your email (including spam folder) to verify your account before logging in. This may take a few minutes.",
+        description: "You can now log in with your credentials.",
         duration: 6000,
       });
 
       navigate("/login", {
         state: {
           email: data.email,
-          message: "Please check your email (including spam folder) to verify your account before logging in.",
+          message: "Account created successfully. Please log in with your credentials.",
         },
       });
     } catch (error: any) {
