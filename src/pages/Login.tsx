@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -31,6 +31,20 @@ const Login = () => {
     acceptTerms: false,
   });
 
+  const checkUsernameExists = async (username: string) => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('username')
+      .eq('username', username)
+      .single();
+
+    if (error && error.code !== 'PGRST116') {
+      console.error('Error checking username:', error);
+      return true; // Assume exists on error to prevent creation
+    }
+    return !!data;
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -38,6 +52,34 @@ const Login = () => {
     try {
       console.log("Attempting login for email:", formData.email);
       
+      // First check if the user exists
+      const { data: existingUser } = await supabase
+        .from('profiles')
+        .select('email')
+        .eq('email', formData.email)
+        .single();
+
+      if (!existingUser) {
+        toast({
+          variant: "destructive",
+          title: "Account Not Found",
+          description: "No account exists with this email. Would you like to create one?",
+          action: (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsSignUp(true)}
+              className="ml-2"
+            >
+              Sign Up
+            </Button>
+          ),
+          duration: 10000,
+        });
+        setIsLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
@@ -47,57 +89,20 @@ const Login = () => {
         console.error("Login error:", error);
         
         if (error instanceof AuthApiError) {
-          if (error.message.includes("Email not confirmed")) {
-            const { error: resendError } = await supabase.auth.resend({
-              type: 'signup',
-              email: formData.email,
-            });
-            
-            if (!resendError) {
-              toast({
-                title: "Verification Required",
-                description: "A verification email has been sent. Please check your inbox and verify your email before logging in.",
-                duration: 8000,
-              });
-            } else {
-              toast({
-                variant: "destructive",
-                title: "Error",
-                description: "Unable to send verification email. Please try signing up again.",
-              });
-            }
-          } else if (error.message.includes("Invalid login credentials")) {
+          if (error.message.includes("Invalid login credentials")) {
             toast({
               variant: "destructive",
-              title: "Account Not Found",
-              description: "No account found with these credentials. Would you like to create one?",
-              action: (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsSignUp(true)}
-                  className="ml-2"
-                >
-                  Sign Up
-                </Button>
-              ),
-              duration: 10000,
+              title: "Invalid Credentials",
+              description: "The email or password you entered is incorrect. Please try again.",
             });
           } else {
             toast({
               variant: "destructive",
               title: "Login Failed",
-              description: "Invalid email or password. Please check your credentials.",
+              description: error.message,
             });
           }
-        } else {
-          toast({
-            variant: "destructive",
-            title: "Login Failed",
-            description: error.message,
-          });
         }
-        setIsLoading(false);
         return;
       }
 
@@ -145,6 +150,45 @@ const Login = () => {
     setIsLoading(true);
 
     try {
+      // Check if email already exists
+      const { data: existingEmail } = await supabase
+        .from('profiles')
+        .select('email')
+        .eq('email', formData.email)
+        .single();
+
+      if (existingEmail) {
+        toast({
+          variant: "destructive",
+          title: "Email Already Registered",
+          description: "This email is already registered. Please login or use a different email.",
+          action: (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsSignUp(false)}
+              className="ml-2"
+            >
+              Login
+            </Button>
+          ),
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // Check if username is taken
+      const usernameExists = await checkUsernameExists(formData.username);
+      if (usernameExists) {
+        toast({
+          variant: "destructive",
+          title: "Username Taken",
+          description: "This username is already taken. Please choose a different one.",
+        });
+        setIsLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -221,11 +265,12 @@ const Login = () => {
                     <Input 
                       type="text"
                       name="username"
-                      placeholder="Enter your username"
+                      placeholder="Choose a unique username"
                       value={formData.username}
                       onChange={handleInputChange}
                       disabled={isLoading}
                       required
+                      minLength={3}
                     />
                   </div>
                 )}
