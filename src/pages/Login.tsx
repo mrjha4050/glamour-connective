@@ -10,6 +10,8 @@ import { AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { AuthError, AuthApiError } from "@supabase/supabase-js";
+import PasswordStrengthIndicator from "@/components/PasswordStrengthIndicator";
+import TermsModal from "@/components/TermsModal";
 
 const Login = () => {
   const location = useLocation();
@@ -20,10 +22,13 @@ const Login = () => {
   
   const [isLoading, setIsLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
+  const [termsModalOpen, setTermsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     email: email || "",
     password: "",
+    confirmPassword: "",
     username: "",
+    acceptTerms: false,
   });
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -118,6 +123,25 @@ const Login = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!formData.acceptTerms) {
+      toast({
+        variant: "destructive",
+        title: "Terms Required",
+        description: "Please accept the terms and conditions to create an account.",
+      });
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      toast({
+        variant: "destructive",
+        title: "Password Mismatch",
+        description: "Passwords do not match. Please try again.",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -126,7 +150,7 @@ const Login = () => {
         password: formData.password,
         options: {
           data: {
-            full_name: formData.username,
+            username: formData.username,
           },
         },
       });
@@ -228,7 +252,43 @@ const Login = () => {
                     disabled={isLoading}
                     required
                   />
+                  {isSignUp && <PasswordStrengthIndicator password={formData.password} />}
                 </div>
+                {isSignUp && (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Confirm Password</label>
+                    <Input 
+                      type="password"
+                      name="confirmPassword"
+                      placeholder="Confirm your password"
+                      value={formData.confirmPassword}
+                      onChange={handleInputChange}
+                      disabled={isLoading}
+                      required
+                    />
+                  </div>
+                )}
+                {isSignUp && (
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="terms"
+                      checked={formData.acceptTerms}
+                      onCheckedChange={(checked) => 
+                        setFormData(prev => ({ ...prev, acceptTerms: checked as boolean }))
+                      }
+                    />
+                    <label htmlFor="terms" className="text-sm text-gray-600">
+                      I accept the{" "}
+                      <button
+                        type="button"
+                        onClick={() => setTermsModalOpen(true)}
+                        className="text-secondary hover:underline"
+                      >
+                        terms and conditions
+                      </button>
+                    </label>
+                  </div>
+                )}
                 {!isSignUp && (
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
@@ -281,6 +341,7 @@ const Login = () => {
           </Card>
         </div>
       </div>
+      <TermsModal open={termsModalOpen} onOpenChange={setTermsModalOpen} />
     </div>
   );
 };
