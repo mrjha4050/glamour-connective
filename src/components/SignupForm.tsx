@@ -40,7 +40,7 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
         .eq('email', data.email)
         .maybeSingle();
 
-      if (checkError) {
+      if (checkError && checkError.code !== 'PGRST116') {
         console.error("Error checking existing user:", checkError);
         throw checkError;
       }
