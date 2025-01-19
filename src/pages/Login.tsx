@@ -268,7 +268,7 @@ const Login = () => {
         <div className="max-w-md mx-auto">
           <Card className="border-none shadow-lg">
             <CardHeader>
-              <h1 className="text-3xl font-serif font-bold text-center gradient-text mb-2">
+              <h1 className="text-3xl font-serif font-bold text-center text-primary mb-2">
                 {isSignUp ? "Create Account" : "Welcome Back"}
               </h1>
               <p className="text-gray-600 text-center">
