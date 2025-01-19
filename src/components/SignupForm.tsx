@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getErrorMessage } from "@/utils/auth-errors";
 import { useToast } from "@/hooks/use-toast";
 import { signupSchema, SignupFormData } from "@/types/auth";
+import { AuthError, AuthApiError } from "@supabase/supabase-js";
 import RegistrationForm from "./auth/RegistrationForm";
 
 interface SignupFormProps {
@@ -27,6 +28,32 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
       acceptTerms: false,
     },
   });
+
+  const handleAuthError = (error: AuthError) => {
+    console.error("Auth error:", error);
+    if (error instanceof AuthApiError) {
+      if (error.message.includes("User already registered") || error.status === 422) {
+        console.log("User already exists, redirecting to login");
+        toast({
+          variant: "destructive",
+          title: "Account Already Exists",
+          description: "An account with this email already exists. Please login instead.",
+        });
+        navigate("/login", { 
+          state: { 
+            email: form.getValues("email"),
+            message: "An account with this email already exists. Please login instead." 
+          } 
+        });
+        return;
+      }
+    }
+    toast({
+      variant: "destructive",
+      title: "Error Creating Account",
+      description: getErrorMessage(error),
+    });
+  };
 
   const onSubmit = async (data: SignupFormData) => {
     try {
@@ -53,12 +80,12 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
         toast({
           variant: "destructive",
           title: "Account Already Exists",
-          description: "An account with this email already exists. Please login or use a different email.",
+          description: "An account with this email already exists. Please login instead.",
         });
         navigate("/login", { 
           state: { 
             email: data.email,
-            message: "An account with this email already exists. Please login or use a different email." 
+            message: "An account with this email already exists. Please login instead." 
           } 
         });
         return;
@@ -76,7 +103,6 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
       });
 
       if (error) {
-        console.error("Signup error:", error);
         throw error;
       }
 
@@ -97,11 +123,15 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
       });
     } catch (error: any) {
       console.error("Signup process error:", error);
-      toast({
-        variant: "destructive",
-        title: "Error Creating Account",
-        description: getErrorMessage(error),
-      });
+      if (error instanceof AuthError) {
+        handleAuthError(error);
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error Creating Account",
+          description: "An unexpected error occurred. Please try again.",
+        });
+      }
     } finally {
       setIsLoading(false);
     }
