@@ -19,7 +19,9 @@ export const Hero = () => {
                 Register as Artist
               </Button>
             </Link>
-            <Button className="bg-primary text-white hover:bg-primary/90 transition-all text-lg py-6 px-8">
+            <Button 
+              className="bg-white text-[#ea384c] hover:bg-[#ea384c] hover:text-white transition-all text-lg py-6 px-8 border border-[#ea384c]"
+            >
               Book an Artist
             </Button>
           </div>
