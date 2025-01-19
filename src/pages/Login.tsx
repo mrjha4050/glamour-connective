@@ -271,7 +271,7 @@ const Login = () => {
               <h1 className="text-3xl font-serif font-bold text-center text-primary mb-2">
                 {isSignUp ? "Create Account" : "Welcome Back"}
               </h1>
-              <p className="text-gray-600 text-center">
+              <p className="text-primary/80 text-center">
                 {isSignUp ? "Join GlamConnect today" : "Sign in to your GlamConnect account"}
               </p>
             </CardHeader>
