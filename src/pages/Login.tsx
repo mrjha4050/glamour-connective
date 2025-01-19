@@ -268,10 +268,10 @@ const Login = () => {
         <div className="max-w-md mx-auto">
           <Card className="border-none shadow-lg">
             <CardHeader>
-              <h1 className="text-3xl font-serif font-bold text-center text-primary mb-2">
+              <h1 className="text-3xl font-serif font-bold text-center gradient-text mb-2">
                 {isSignUp ? "Create Account" : "Welcome Back"}
               </h1>
-              <p className="text-primary/80 text-center">
+              <p className="text-primary text-center">
                 {isSignUp ? "Join GlamConnect today" : "Sign in to your GlamConnect account"}
               </p>
             </CardHeader>
