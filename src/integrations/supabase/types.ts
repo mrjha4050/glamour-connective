@@ -9,6 +9,108 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      artist_specialties: {
+        Row: {
+          artist_id: string | null
+          created_at: string
+          id: string
+          specialty: Database["public"]["Enums"]["artist_specialty"]
+        }
+        Insert: {
+          artist_id?: string | null
+          created_at?: string
+          id?: string
+          specialty: Database["public"]["Enums"]["artist_specialty"]
+        }
+        Update: {
+          artist_id?: string | null
+          created_at?: string
+          id?: string
+          specialty?: Database["public"]["Enums"]["artist_specialty"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "artist_specialties_artist_id_fkey"
+            columns: ["artist_id"]
+            isOneToOne: false
+            referencedRelation: "artists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      artists: {
+        Row: {
+          bio: string | null
+          created_at: string
+          hourly_rate: number | null
+          id: string
+          is_verified: boolean | null
+          location: string | null
+          updated_at: string
+          years_experience: number | null
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          hourly_rate?: number | null
+          id: string
+          is_verified?: boolean | null
+          location?: string | null
+          updated_at?: string
+          years_experience?: number | null
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          hourly_rate?: number | null
+          id?: string
+          is_verified?: boolean | null
+          location?: string | null
+          updated_at?: string
+          years_experience?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "artists_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portfolio_images: {
+        Row: {
+          artist_id: string | null
+          caption: string | null
+          created_at: string
+          id: string
+          image_url: string
+        }
+        Insert: {
+          artist_id?: string | null
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url: string
+        }
+        Update: {
+          artist_id?: string | null
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portfolio_images_artist_id_fkey"
+            columns: ["artist_id"]
+            isOneToOne: false
+            referencedRelation: "artists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -35,6 +137,47 @@ export type Database = {
           username?: string | null
         }
         Relationships: []
+      }
+      services: {
+        Row: {
+          artist_id: string | null
+          created_at: string
+          description: string | null
+          duration: number
+          id: string
+          name: string
+          price: number
+          updated_at: string
+        }
+        Insert: {
+          artist_id?: string | null
+          created_at?: string
+          description?: string | null
+          duration: number
+          id?: string
+          name: string
+          price: number
+          updated_at?: string
+        }
+        Update: {
+          artist_id?: string | null
+          created_at?: string
+          description?: string | null
+          duration?: number
+          id?: string
+          name?: string
+          price?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "services_artist_id_fkey"
+            columns: ["artist_id"]
+            isOneToOne: false
+            referencedRelation: "artists"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       users: {
         Row: {
@@ -68,7 +211,12 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      artist_specialty:
+        | "Bridal"
+        | "Editorial"
+        | "Special Effects"
+        | "Fashion"
+        | "Beauty"
     }
     CompositeTypes: {
       [_ in never]: never
