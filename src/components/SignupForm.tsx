@@ -107,7 +107,6 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
       }
 
       console.log("Signup successful, user data:", signUpData);
-      console.log("Profile should be created by database trigger");
       
       toast({
         title: "Account Created Successfully!",
