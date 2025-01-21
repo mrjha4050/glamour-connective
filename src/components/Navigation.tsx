@@ -44,6 +44,7 @@ export const Navigation = () => {
                 <Link to="/search" className="hover:text-primary transition-colors">Find Artists</Link>
                 <Link to="/masterclasses" className="hover:text-primary transition-colors">Masterclasses</Link>
                 <Link to="/dashboard" className="hover:text-primary transition-colors">My Bookings</Link>
+                <Link to="/portfolio" className="hover:text-primary transition-colors">Portfolio</Link>
                 <Button variant="ghost" size="icon">
                   <Bell className="h-5 w-5" />
                 </Button>
@@ -113,6 +114,13 @@ export const Navigation = () => {
                     onClick={() => setIsOpen(false)}
                   >
                     My Bookings
+                  </Link>
+                  <Link 
+                    to="/portfolio" 
+                    className="hover:text-primary transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Portfolio
                   </Link>
                   <Button 
                     variant="ghost"
