@@ -15,15 +15,29 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+// Define the specialty type to match the database enum
+type ArtistSpecialty = "Bridal" | "Editorial" | "Special Effects" | "Fashion" | "Beauty";
+
+interface FormData {
+  fullName: string;
+  email: string;
+  phone: string;
+  specialty: ArtistSpecialty;
+  bio: string;
+  location: string;
+  yearsExperience: string;
+  hourlyRate: string;
+}
+
 const ArtistRegistration = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     fullName: "",
     email: "",
     phone: "",
-    specialty: "",
+    specialty: "Bridal", // Set a default value from the enum
     bio: "",
     location: "",
     yearsExperience: "",
@@ -38,7 +52,7 @@ const ArtistRegistration = () => {
     }));
   };
 
-  const handleSpecialtyChange = (value: string) => {
+  const handleSpecialtyChange = (value: ArtistSpecialty) => {
     setFormData((prev) => ({
       ...prev,
       specialty: value,
@@ -107,6 +121,15 @@ const ArtistRegistration = () => {
     }
   };
 
+  // Array of valid specialties matching the database enum
+  const specialties: ArtistSpecialty[] = [
+    "Bridal",
+    "Editorial",
+    "Special Effects",
+    "Fashion",
+    "Beauty"
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-secondary/5 to-white">
       <Navigation />
@@ -164,11 +187,11 @@ const ArtistRegistration = () => {
                     <SelectValue placeholder="Select your specialty" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Bridal">Bridal</SelectItem>
-                    <SelectItem value="Editorial">Editorial</SelectItem>
-                    <SelectItem value="Special Effects">Special Effects</SelectItem>
-                    <SelectItem value="Fashion">Fashion</SelectItem>
-                    <SelectItem value="Beauty">Beauty</SelectItem>
+                    {specialties.map((specialty) => (
+                      <SelectItem key={specialty} value={specialty}>
+                        {specialty}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
