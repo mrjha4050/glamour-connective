@@ -79,6 +79,33 @@ export type Database = {
           },
         ]
       }
+      password_reset_tokens: {
+        Row: {
+          created_at: string | null
+          expires_at: string
+          id: string
+          token: string
+          used: boolean | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at: string
+          id?: string
+          token: string
+          used?: boolean | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          token?: string
+          used?: boolean | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       portfolio_images: {
         Row: {
           artist_id: string | null
@@ -115,6 +142,7 @@ export type Database = {
         Row: {
           created_at: string
           email: string
+          email_verified: boolean | null
           full_name: string
           id: string
           updated_at: string
@@ -123,6 +151,7 @@ export type Database = {
         Insert: {
           created_at?: string
           email: string
+          email_verified?: boolean | null
           full_name: string
           id: string
           updated_at?: string
@@ -131,6 +160,7 @@ export type Database = {
         Update: {
           created_at?: string
           email?: string
+          email_verified?: boolean | null
           full_name?: string
           id?: string
           updated_at?: string
