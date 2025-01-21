@@ -19,7 +19,7 @@ import {
 const Search = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
-  const [priceRange, setPriceRange] = useState([0, 500]);
+  const [priceRange, setPriceRange] = useState([0, 10000]); // Adjusted for INR
   const [specialty, setSpecialty] = useState<string>("");
   const [location, setLocation] = useState<string>("");
   const [rating, setRating] = useState<string>("");
@@ -49,7 +49,7 @@ const Search = () => {
         query = query.eq('location', location);
       }
 
-      if (priceRange[0] > 0 || priceRange[1] < 500) {
+      if (priceRange[0] > 0 || priceRange[1] < 10000) {
         query = query
           .gte('hourly_rate', priceRange[0])
           .lte('hourly_rate', priceRange[1]);
@@ -100,7 +100,7 @@ const Search = () => {
               Find Your Perfect <span className="gradient-text">Artist</span>
             </h1>
             <p className="text-lg text-gray-600 mb-8">
-              Browse top-rated artists for every occasion
+              Browse top-rated makeup artists in India
             </p>
             
             <form onSubmit={handleSearch} className="relative max-w-3xl mx-auto">
@@ -117,17 +117,17 @@ const Search = () => {
           <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Price Range ($/hr)</label>
+                <label className="text-sm font-medium">Price Range (₹/hr)</label>
                 <Slider
                   value={priceRange}
                   onValueChange={setPriceRange}
-                  max={500}
-                  step={10}
+                  max={10000}
+                  step={100}
                   className="w-full"
                 />
                 <div className="flex justify-between text-sm text-gray-600">
-                  <span>${priceRange[0]}</span>
-                  <span>${priceRange[1]}</span>
+                  <span>₹{priceRange[0]}</span>
+                  <span>₹{priceRange[1]}</span>
                 </div>
               </div>
               
@@ -154,9 +154,14 @@ const Search = () => {
                     <SelectValue placeholder="Select location" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="London">London</SelectItem>
-                    <SelectItem value="Paris">Paris</SelectItem>
-                    <SelectItem value="New York">New York</SelectItem>
+                    <SelectItem value="Mumbai">Mumbai</SelectItem>
+                    <SelectItem value="Delhi">Delhi</SelectItem>
+                    <SelectItem value="Bangalore">Bangalore</SelectItem>
+                    <SelectItem value="Chennai">Chennai</SelectItem>
+                    <SelectItem value="Kolkata">Kolkata</SelectItem>
+                    <SelectItem value="Hyderabad">Hyderabad</SelectItem>
+                    <SelectItem value="Pune">Pune</SelectItem>
+                    <SelectItem value="Ahmedabad">Ahmedabad</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -224,9 +229,14 @@ const Search = () => {
                         </span>
                       </div>
                     </div>
-                    <Button className="w-full bg-primary text-white hover:bg-primary/90 transition-all shimmer">
-                      View Profile
-                    </Button>
+                    <div className="flex justify-between items-center">
+                      <span className="text-lg font-semibold text-primary">
+                        ₹{artist.hourly_rate}/hr
+                      </span>
+                      <Button className="bg-primary text-white hover:bg-primary/90 transition-all shimmer">
+                        View Profile
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ))}
