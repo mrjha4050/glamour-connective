@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Navigation } from "@/components/Navigation";
 import { Search as SearchIcon, Filter, Star } from "lucide-react";
-import { FeaturedArtists } from "@/components/FeaturedArtists";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
@@ -81,7 +80,8 @@ const Search = () => {
       }
 
       return artistsWithRating;
-    }
+    },
+    initialData: [],
   });
 
   const handleSearch = (e: React.FormEvent) => {
@@ -233,7 +233,7 @@ const Search = () => {
                       <span className="text-lg font-semibold text-primary">
                         ₹{artist.hourly_rate}/hr
                       </span>
-                      <Button className="bg-primary text-white hover:bg-primary/90 transition-all shimmer">
+                      <Button className="bg-primary text-white hover:bg-primary/90 transition-all">
                         View Profile
                       </Button>
                     </div>
