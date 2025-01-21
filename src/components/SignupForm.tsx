@@ -25,6 +25,9 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
       email: "",
       password: "",
       confirmPassword: "",
+      username: "",
+      fullName: "",
+      role: "customer",
       acceptTerms: false,
     },
   });
@@ -97,7 +100,9 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
         password: data.password,
         options: {
           data: {
-            full_name: "",
+            full_name: data.fullName,
+            username: data.username,
+            role: data.role,
           },
         },
       });
@@ -108,16 +113,21 @@ export const SignupForm = ({ onOpenTerms }: SignupFormProps) => {
 
       console.log("Signup successful, user data:", signUpData);
       
+      // Redirect based on role
+      const redirectPath = data.role === 'artist' ? '/register-artist' : '/dashboard';
+      
       toast({
         title: "Account Created Successfully!",
-        description: "You can now log in with your credentials.",
+        description: data.role === 'artist' 
+          ? "Please complete your artist profile to start offering services."
+          : "You can now start booking services from our talented artists.",
         duration: 6000,
       });
 
-      navigate("/login", {
+      navigate(redirectPath, {
         state: {
           email: data.email,
-          message: "Account created successfully. Please log in with your credentials.",
+          message: "Account created successfully. Welcome to GlamConnect!",
         },
       });
     } catch (error: any) {

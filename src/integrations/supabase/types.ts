@@ -9,6 +9,44 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      artist_availability: {
+        Row: {
+          artist_id: string | null
+          created_at: string
+          date: string
+          end_time: string
+          id: string
+          is_available: boolean | null
+          start_time: string
+        }
+        Insert: {
+          artist_id?: string | null
+          created_at?: string
+          date: string
+          end_time: string
+          id?: string
+          is_available?: boolean | null
+          start_time: string
+        }
+        Update: {
+          artist_id?: string | null
+          created_at?: string
+          date?: string
+          end_time?: string
+          id?: string
+          is_available?: boolean | null
+          start_time?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "artist_availability_artist_id_fkey"
+            columns: ["artist_id"]
+            isOneToOne: false
+            referencedRelation: "artists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       artist_specialties: {
         Row: {
           artist_id: string | null
@@ -79,6 +117,185 @@ export type Database = {
           },
         ]
       }
+      bookings: {
+        Row: {
+          artist_id: string | null
+          booking_date: string
+          created_at: string
+          customer_id: string | null
+          event_type: Database["public"]["Enums"]["event_type"]
+          id: string
+          status: string | null
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          artist_id?: string | null
+          booking_date: string
+          created_at?: string
+          customer_id?: string | null
+          event_type: Database["public"]["Enums"]["event_type"]
+          id?: string
+          status?: string | null
+          total_amount: number
+          updated_at?: string
+        }
+        Update: {
+          artist_id?: string | null
+          booking_date?: string
+          created_at?: string
+          customer_id?: string | null
+          event_type?: Database["public"]["Enums"]["event_type"]
+          id?: string
+          status?: string | null
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_artist_id_fkey"
+            columns: ["artist_id"]
+            isOneToOne: false
+            referencedRelation: "artists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_messages: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean | null
+          message: string
+          receiver_id: string | null
+          sender_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message: string
+          receiver_id?: string | null
+          sender_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          receiver_id?: string | null
+          sender_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      masterclass_enrollments: {
+        Row: {
+          created_at: string
+          customer_id: string | null
+          id: string
+          masterclass_id: string | null
+          payment_status: string | null
+        }
+        Insert: {
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          masterclass_id?: string | null
+          payment_status?: string | null
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          masterclass_id?: string | null
+          payment_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "masterclass_enrollments_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "masterclass_enrollments_masterclass_id_fkey"
+            columns: ["masterclass_id"]
+            isOneToOne: false
+            referencedRelation: "masterclasses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      masterclasses: {
+        Row: {
+          artist_id: string | null
+          category: Database["public"]["Enums"]["artist_category"]
+          created_at: string
+          description: string | null
+          duration: number
+          id: string
+          max_participants: number | null
+          price: number
+          scheduled_date: string
+          title: string
+        }
+        Insert: {
+          artist_id?: string | null
+          category: Database["public"]["Enums"]["artist_category"]
+          created_at?: string
+          description?: string | null
+          duration: number
+          id?: string
+          max_participants?: number | null
+          price: number
+          scheduled_date: string
+          title: string
+        }
+        Update: {
+          artist_id?: string | null
+          category?: Database["public"]["Enums"]["artist_category"]
+          created_at?: string
+          description?: string | null
+          duration?: number
+          id?: string
+          max_participants?: number | null
+          price?: number
+          scheduled_date?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "masterclasses_artist_id_fkey"
+            columns: ["artist_id"]
+            isOneToOne: false
+            referencedRelation: "artists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       password_reset_tokens: {
         Row: {
           created_at: string | null
@@ -140,33 +357,100 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           created_at: string
           email: string
           email_verified: boolean | null
           full_name: string
           id: string
+          is_phone_verified: boolean | null
+          phone_number: string | null
+          role: Database["public"]["Enums"]["user_role"] | null
           updated_at: string
           username: string | null
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string
           email: string
           email_verified?: boolean | null
           full_name: string
           id: string
+          is_phone_verified?: boolean | null
+          phone_number?: string | null
+          role?: Database["public"]["Enums"]["user_role"] | null
           updated_at?: string
           username?: string | null
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string
           email?: string
           email_verified?: boolean | null
           full_name?: string
           id?: string
+          is_phone_verified?: boolean | null
+          phone_number?: string | null
+          role?: Database["public"]["Enums"]["user_role"] | null
           updated_at?: string
           username?: string | null
         }
         Relationships: []
+      }
+      reviews: {
+        Row: {
+          artist_id: string | null
+          artist_response: string | null
+          booking_id: string | null
+          comment: string | null
+          created_at: string
+          customer_id: string | null
+          id: string
+          rating: number | null
+        }
+        Insert: {
+          artist_id?: string | null
+          artist_response?: string | null
+          booking_id?: string | null
+          comment?: string | null
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          rating?: number | null
+        }
+        Update: {
+          artist_id?: string | null
+          artist_response?: string | null
+          booking_id?: string | null
+          comment?: string | null
+          created_at?: string
+          customer_id?: string | null
+          id?: string
+          rating?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_artist_id_fkey"
+            columns: ["artist_id"]
+            isOneToOne: false
+            referencedRelation: "artists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       services: {
         Row: {
@@ -238,15 +522,26 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      check_artist_availability: {
+        Args: {
+          p_artist_id: string
+          p_date: string
+          p_start_time: string
+          p_end_time: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
+      artist_category: "makeup" | "hair" | "draping"
       artist_specialty:
         | "Bridal"
         | "Editorial"
         | "Special Effects"
         | "Fashion"
         | "Beauty"
+      event_type: "wedding" | "engagement" | "party" | "other"
+      user_role: "artist" | "customer" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never

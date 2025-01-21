@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   FormControl,
   FormField,
@@ -29,6 +29,42 @@ const RegistrationForm = ({ form, isLoading, onOpenTerms }: RegistrationFormProp
     <div className="space-y-4">
       <FormField
         control={form.control}
+        name="username"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Username</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="Choose a username"
+                {...field}
+                disabled={isLoading}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="fullName"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Full Name</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="Enter your full name"
+                {...field}
+                disabled={isLoading}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
         name="email"
         render={({ field }) => (
           <FormItem>
@@ -40,6 +76,42 @@ const RegistrationForm = ({ form, isLoading, onOpenTerms }: RegistrationFormProp
                 {...field}
                 disabled={isLoading}
               />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="role"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>I want to</FormLabel>
+            <FormControl>
+              <RadioGroup
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                className="flex flex-col space-y-1"
+                disabled={isLoading}
+              >
+                <FormItem className="flex items-center space-x-3 space-y-0">
+                  <FormControl>
+                    <RadioGroupItem value="customer" />
+                  </FormControl>
+                  <FormLabel className="font-normal">
+                    Book services from artists
+                  </FormLabel>
+                </FormItem>
+                <FormItem className="flex items-center space-x-3 space-y-0">
+                  <FormControl>
+                    <RadioGroupItem value="artist" />
+                  </FormControl>
+                  <FormLabel className="font-normal">
+                    Offer my services as an artist
+                  </FormLabel>
+                </FormItem>
+              </RadioGroup>
             </FormControl>
             <FormMessage />
           </FormItem>
