@@ -361,39 +361,33 @@ export type Database = {
           created_at: string
           email: string
           email_verified: boolean | null
-          full_name: string
           id: string
           is_phone_verified: boolean | null
           phone_number: string | null
           role: Database["public"]["Enums"]["user_role"] | null
           updated_at: string
-          username: string | null
         }
         Insert: {
           avatar_url?: string | null
           created_at?: string
           email: string
           email_verified?: boolean | null
-          full_name: string
           id: string
           is_phone_verified?: boolean | null
           phone_number?: string | null
           role?: Database["public"]["Enums"]["user_role"] | null
           updated_at?: string
-          username?: string | null
         }
         Update: {
           avatar_url?: string | null
           created_at?: string
           email?: string
           email_verified?: boolean | null
-          full_name?: string
           id?: string
           is_phone_verified?: boolean | null
           phone_number?: string | null
           role?: Database["public"]["Enums"]["user_role"] | null
           updated_at?: string
-          username?: string | null
         }
         Relationships: []
       }
@@ -496,24 +490,27 @@ export type Database = {
       users: {
         Row: {
           created_at: string | null
-          email: string | null
-          full_name: string
+          email: string
+          full_name: string | null
           id: string
-          password_hash: string | null
+          password: string
+          updated_at: string | null
         }
         Insert: {
           created_at?: string | null
-          email?: string | null
-          full_name?: string
+          email: string
+          full_name?: string | null
           id?: string
-          password_hash?: string | null
+          password: string
+          updated_at?: string | null
         }
         Update: {
           created_at?: string | null
-          email?: string | null
-          full_name?: string
+          email?: string
+          full_name?: string | null
           id?: string
-          password_hash?: string | null
+          password?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
