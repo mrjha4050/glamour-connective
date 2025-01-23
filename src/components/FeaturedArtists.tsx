@@ -6,30 +6,24 @@ import { Link } from "react-router-dom";
 const mockArtists = [
   {
     id: "1",
-    profiles: {
-      full_name: "Sarah Johnson",
-      avatar_url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330"
-    },
-    artist_specialties: [{ specialty: "Bridal Makeup" }],
-    avgRating: 4.8
+    name: "Sarah Johnson",
+    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
+    specialty: "Bridal Makeup",
+    rating: 4.8
   },
   {
     id: "2",
-    profiles: {
-      full_name: "Michael Chen",
-      avatar_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d"
-    },
-    artist_specialties: [{ specialty: "Editorial Makeup" }],
-    avgRating: 4.9
+    name: "Michael Chen",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d",
+    specialty: "Editorial Makeup",
+    rating: 4.9
   },
   {
     id: "3",
-    profiles: {
-      full_name: "Emma Williams",
-      avatar_url: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80"
-    },
-    artist_specialties: [{ specialty: "Special Effects" }],
-    avgRating: 4.7
+    name: "Emma Williams",
+    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80",
+    specialty: "Special Effects",
+    rating: 4.7
   }
 ];
 
@@ -45,8 +39,8 @@ export const FeaturedArtists = () => {
             <Card key={artist.id} className="overflow-hidden hover:shadow-lg transition-shadow">
               <CardHeader className="p-0">
                 <img
-                  src={artist.profiles.avatar_url}
-                  alt={artist.profiles.full_name}
+                  src={artist.image}
+                  alt={artist.name}
                   className="w-full h-64 object-cover"
                 />
               </CardHeader>
@@ -54,16 +48,16 @@ export const FeaturedArtists = () => {
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h3 className="text-xl font-serif font-semibold">
-                      {artist.profiles.full_name}
+                      {artist.name}
                     </h3>
                     <p className="text-gray-600">
-                      {artist.artist_specialties[0].specialty}
+                      {artist.specialty}
                     </p>
                   </div>
                   <div className="flex items-center">
                     <Star className="w-4 h-4 text-secondary fill-current" />
                     <span className="ml-1 font-semibold">
-                      {artist.avgRating}
+                      {artist.rating}
                     </span>
                   </div>
                 </div>

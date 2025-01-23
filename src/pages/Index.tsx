@@ -7,9 +7,11 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
-      <Hero />
-      <FeaturedArtists />
-      <Testimonials />
+      <main className="pt-16"> {/* Added padding-top to account for fixed navbar */}
+        <Hero />
+        <FeaturedArtists />
+        <Testimonials />
+      </main>
     </div>
   );
 };

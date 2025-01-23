@@ -19,11 +19,13 @@ export const Hero = () => {
                 Register as Artist
               </Button>
             </Link>
-            <Button 
-              className="bg-white text-primary hover:bg-primary hover:text-white transition-all text-lg py-6 px-8 border border-primary"
-            >
-              Book an Artist
-            </Button>
+            <Link to="/search">
+              <Button 
+                className="bg-white text-primary hover:bg-primary hover:text-white transition-all text-lg py-6 px-8 border border-primary w-full sm:w-auto"
+              >
+                Book an Artist
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
