@@ -1,17 +1,11 @@
 import { useState } from "react";
-import { Menu, X, User, Bell, Settings, LogOut } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    navigate("/login");
-  };
 
   return (
     <nav className="fixed w-full bg-white/80 backdrop-blur-md z-50 shadow-sm">
@@ -32,8 +26,14 @@ export const Navigation = () => {
               </Button>
             </Link>
             <Link to="/login">
-              <Button className="bg-primary text-white hover:bg-primary/90 transition-all px-6">
-                Login/Signup
+              <Button 
+                className="bg-primary text-white hover:bg-primary/90 transition-all px-6"
+                onClick={() => {
+                  // Pre-select artist role when navigating to login
+                  navigate("/login", { state: { preselectedRole: "artist" } });
+                }}
+              >
+                Login as Artist
               </Button>
             </Link>
           </div>
@@ -77,11 +77,15 @@ export const Navigation = () => {
                   Register as Artist
                 </Button>
               </Link>
-              <Link to="/login" onClick={() => setIsOpen(false)}>
-                <Button className="bg-primary text-white hover:bg-primary/90 transition-all w-full px-6">
-                  Login/Signup
-                </Button>
-              </Link>
+              <Button 
+                className="bg-primary text-white hover:bg-primary/90 transition-all w-full px-6"
+                onClick={() => {
+                  setIsOpen(false);
+                  navigate("/login", { state: { preselectedRole: "artist" } });
+                }}
+              >
+                Login as Artist
+              </Button>
             </div>
           </div>
         )}
