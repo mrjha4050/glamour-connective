@@ -5,8 +5,8 @@ import LoginForm from "@/components/auth/LoginForm";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
-import { SignUpForm } from "@/components/SignupForm";
-import { TermsModal } from "@/components/TermsModal";
+import { SignupForm } from "@/components/SignupForm";
+import TermsModal from "@/components/TermsModal";
 
 const Login = () => {
   const location = useLocation();
@@ -46,7 +46,7 @@ const Login = () => {
               )}
 
               {isSignUp ? (
-                <SignUpForm onOpenTerms={() => setShowTerms(true)} />
+                <SignupForm onOpenTerms={() => setShowTerms(true)} />
               ) : (
                 <LoginForm
                   email={email}
@@ -58,7 +58,7 @@ const Login = () => {
           </Card>
         </div>
       </div>
-      <TermsModal open={showTerms} onClose={() => setShowTerms(false)} />
+      <TermsModal open={showTerms} onOpenChange={setShowTerms} />
     </div>
   );
 };
