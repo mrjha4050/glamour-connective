@@ -361,6 +361,7 @@ export type Database = {
           created_at: string
           email: string
           email_verified: boolean | null
+          full_name: string | null
           id: string
           is_phone_verified: boolean | null
           phone_number: string | null
@@ -373,6 +374,7 @@ export type Database = {
           created_at?: string
           email: string
           email_verified?: boolean | null
+          full_name?: string | null
           id: string
           is_phone_verified?: boolean | null
           phone_number?: string | null
@@ -385,6 +387,7 @@ export type Database = {
           created_at?: string
           email?: string
           email_verified?: boolean | null
+          full_name?: string | null
           id?: string
           is_phone_verified?: boolean | null
           phone_number?: string | null
